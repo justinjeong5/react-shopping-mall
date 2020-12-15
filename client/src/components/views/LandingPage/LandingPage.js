@@ -7,6 +7,7 @@ import { Card, Row, Col, Typography, Carousel } from 'antd';
 import { CodeSandboxOutlined } from '@ant-design/icons'
 import { LOAD_PRODUCTS_REQUEST } from '../../../_sagas/types'
 import LoadingPage from '../LoadingPage/LoadingPage';
+import ProductFilter from './Sections/ProductFilter'
 const { Title } = Typography;
 
 
@@ -63,6 +64,10 @@ function LandingPage(props) {
     };
   }, [loadProductsLoading, noMoreProducts]);
 
+  const onFilterChange = (payload) => {
+    console.log(payload, 'payload')
+  }
+
 
   const renderCards = productData.map(product => {
     return (
@@ -97,6 +102,8 @@ function LandingPage(props) {
           <Title level={2}> Jaymall에 오신것을 환영합니다. <CodeSandboxOutlined /></Title>
         </div>
         {loadProductsLoading && <LoadingPage />}
+
+        {productData && <ProductFilter onFilterChange={onFilterChange} />}
         <Row gutter={[24, 32]}>
           {productData && renderCards}
         </Row>
