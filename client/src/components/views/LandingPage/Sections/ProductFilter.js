@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Divider, Checkbox, Row, Col, Slider, Collapse } from 'antd'
+import { Divider, Checkbox, Row, Col, Slider, Collapse, Input } from 'antd'
+import { ShoppingOutlined } from '@ant-design/icons'
 import { ProductClothesSort, ProductAccessorySort } from '../../../utils/ProductSort/ProductSort'
 
 const marks = {
@@ -10,6 +11,7 @@ const marks = {
 function ProductFilter(props) {
 
   const [priceRange, setPriceRange] = useState([0, 500000])
+  const [word, setWord] = useState('')
 
   const [checkedClothesList, setCheckedClothesList] = useState(ProductClothesSort);
   const [indeterminateClothes, setIndeterminateClothes] = useState(false);
@@ -23,10 +25,11 @@ function ProductFilter(props) {
   useEffect(() => {
     const payload = {
       sort: [...checkedClothesList, ...checkedAccessoryList],
-      price: priceRange
+      price: [priceRange[0] * 5000, priceRange[1] * 5000],
+      word
     }
     props.onFilterChange(payload)
-  }, [checkedClothesList, checkedAccessoryList, priceRange])
+  }, [checkedClothesList, checkedAccessoryList, priceRange, word])
 
   const onChangeClothes = list => {
     setCheckedClothesList(list);
@@ -58,6 +61,10 @@ function ProductFilter(props) {
 
   const handleTipFormatter = (e) => {
     return e * 5000 + '원'
+  }
+
+  const handleChangeWord = (e) => {
+    setWord(e.target.value);
   }
 
   return (
@@ -96,6 +103,9 @@ function ProductFilter(props) {
                 tipFormatter={handleTipFormatter}
                 onAfterChange={onAfterChange}
               />
+            </Col>
+            <Col span={22} style={{ margin: 'auto' }}>
+              <Input.Search value={word} onChange={handleChangeWord} placeholder="상품의 이름이나 설명을 통해 검색하세요. ex(구두, 겨울 잠바)" prefix={<ShoppingOutlined />} enterButton />
             </Col>
           </Row>
         </Collapse.Panel>

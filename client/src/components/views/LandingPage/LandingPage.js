@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { Card, Row, Col, Typography, Carousel } from 'antd';
 import { CodeSandboxOutlined } from '@ant-design/icons'
-import { LOAD_PRODUCTS_REQUEST } from '../../../_sagas/types'
+import { LOAD_PRODUCTS_REQUEST, SET_ALL_FILTERS_INFO_REQUEST } from '../../../_sagas/types'
 import LoadingPage from '../LoadingPage/LoadingPage';
 import ProductFilter from './Sections/ProductFilter'
 const { Title } = Typography;
@@ -15,12 +15,7 @@ function LandingPage(props) {
 
   const dispatch = useDispatch();
   const { logoutUserDone } = useSelector(state => state.user)
-  const { productData, loadProductsLoading, noMoreProducts } = useSelector(state => state.product)
-
-  const [skip, setSkip] = useState(0)
-  const [limit, setLimit] = useState(6)
-  const [orderBy, setOrderBy] = useState('')
-  const [sortBy, setSortBy] = useState('')
+  const { productData, loadProductsLoading, noMoreProducts, skip, limit, orderBy, sortBy, filters } = useSelector(state => state.product)
 
   useEffect(() => {
     if (logoutUserDone) {
@@ -29,32 +24,13 @@ function LandingPage(props) {
   }, [logoutUserDone])
 
   useEffect(() => {
-    dispatch({
-      type: LOAD_PRODUCTS_REQUEST,
-      payload: {
-        skip,
-        limit,
-        orderBy,
-        sortBy,
-      },
-    })
-    setSkip(skip + limit);
-  }, [])
-
-  useEffect(() => {
     function onScroll() {
       if (window.pageYOffset + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
         if (!loadProductsLoading && !noMoreProducts) {
           dispatch({
             type: LOAD_PRODUCTS_REQUEST,
-            payload: {
-              skip,
-              limit,
-              orderBy,
-              sortBy,
-            },
+            payload: { skip, limit, orderBy, sortBy, filters },
           });
-          setSkip(skip + limit);
         }
       }
     }
@@ -62,10 +38,23 @@ function LandingPage(props) {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [loadProductsLoading, noMoreProducts]);
+  }, [loadProductsLoading, noMoreProducts, skip, limit, orderBy, sortBy, filters]);
 
-  const onFilterChange = (payload) => {
-    console.log(payload, 'payload')
+  const onFilterChange = (data) => {
+    dispatch({
+      type: SET_ALL_FILTERS_INFO_REQUEST,
+      payload: {
+        skip: 0,
+        limit: 6,
+        orderBy: '',
+        sortBy: '',
+        filters: {
+          sort: data.sort,
+          price: data.price,
+          word: data.word,
+        },
+      }
+    })
   }
 
 
@@ -76,7 +65,7 @@ function LandingPage(props) {
           hoverable={true}
           style={{ width: '100%' }}
         >
-          <Carousel autoplay style={{ marginBottom: 20 }}>
+          <Carousel autoplay >
             {product?.images?.map((img) => {
               return (
                 <div key={uuidv4()}>
@@ -85,7 +74,7 @@ function LandingPage(props) {
               )
             })}
           </Carousel>
-          <div>
+          <div style={{ marginTop: 20 }}>
             <a href={`/api/product/${product._id}`}>
               <Card.Meta title={product.title} description={`${product.description.slice(0, 100)}...`} />
             </a>
@@ -101,10 +90,9 @@ function LandingPage(props) {
         <div style={{ textAlign: 'center' }}>
           <Title level={2}> Jaymall에 오신것을 환영합니다. <CodeSandboxOutlined /></Title>
         </div>
-        {loadProductsLoading && <LoadingPage />}
-
         {productData && <ProductFilter onFilterChange={onFilterChange} />}
         <Row gutter={[24, 32]}>
+          {loadProductsLoading && <LoadingPage />}
           {productData && renderCards}
         </Row>
       </div>

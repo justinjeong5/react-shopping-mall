@@ -3,29 +3,9 @@ import {
   RESET_UPLOAD_IMAGE, REMOVE_UPLOADED_IMAGE,
   UPLOAD_PRODUCT_REQUEST, UPLOAD_PRODUCT_SUCCESS, UPLOAD_PRODUCT_FAILURE,
   LOAD_PRODUCTS_REQUEST, LOAD_PRODUCTS_SUCCESS, LOAD_PRODUCTS_FAILURE,
+  RESET_PRODUCTS,
+  SET_ALL_FILTERS_INFO_REQUEST,
 } from '../_sagas/types'
-
-import faker from 'faker'
-faker.locale = 'ko'
-const makeFakeProductData = Array.from(Array(20)).map((_) => {
-  return (
-    {
-      writer: '5fd84653d9e3e96b80a69e46',
-      title: faker.lorem.sentence(),
-      description: faker.lorem.paragraph(),
-      images: [
-        { image: faker.image.image() },
-        { image: faker.image.nightlife() },
-        { image: faker.image.fashion() },
-        { image: faker.image.nature() },
-      ],
-      price: parseInt(Math.random() * 100000),
-      sort: ['outter', 'skirts', 'shirts', 'suits', 'bag', 'watch', 'shoes'][parseInt(Math.random() * 6)],
-      sold: parseInt(Math.random() * 100),
-      views: parseInt(Math.random() * 1000),
-    }
-  )
-})
 
 const initialState = {
   uploadImageLoading: false,
@@ -39,6 +19,11 @@ const initialState = {
   loadProductsError: null,
   noMoreProducts: false,
 
+  skip: 0,
+  limit: 6,
+  orderBy: '',
+  sortBy: '',
+  filters: {},
   // productData: makeFakeProductData,
   productData: [],
   fileData: [],
@@ -117,12 +102,29 @@ const product = (state = initialState, action) => {
         loadProductsDone: true,
         productData: [...state.productData, ...action.payload.products],
         noMoreProducts: action.noMoreProducts,
+        skip: state.limit + state.skip,
       }
     case LOAD_PRODUCTS_FAILURE:
       return {
         ...state,
         loadProductsLoading: false,
         loadProductsError: action.error
+      }
+    case RESET_PRODUCTS:
+      return {
+        ...state,
+        productData: [],
+        noMoreProducts: false,
+      }
+    case SET_ALL_FILTERS_INFO_REQUEST:
+      return {
+        ...state,
+        productData: [],
+        skip: action.payload.skip,
+        limit: action.payload.limit,
+        orderBy: action.payload.orderBy,
+        sortBy: action.payload.sortBy,
+        filters: action.payload.filters,
       }
     default:
       return {

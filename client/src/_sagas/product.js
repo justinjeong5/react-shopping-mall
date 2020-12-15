@@ -5,6 +5,7 @@ import {
   UPLOAD_IMAGE_REQUEST, UPLOAD_IMAGE_SUCCESS, UPLOAD_IMAGE_FAILURE,
   UPLOAD_PRODUCT_REQUEST, UPLOAD_PRODUCT_SUCCESS, UPLOAD_PRODUCT_FAILURE,
   LOAD_PRODUCTS_REQUEST, LOAD_PRODUCTS_SUCCESS, LOAD_PRODUCTS_FAILURE,
+  SET_ALL_FILTERS_INFO_REQUEST, SET_ALL_FILTERS_INFO_SUCCESS, SET_ALL_FILTERS_INFO_FAILURE,
 } from './types'
 
 function uploadImageAPI(data) {
@@ -81,9 +82,8 @@ function* watchUploadProduct() {
 }
 
 function* watchLoadProducts() {
-  yield takeLatest(LOAD_PRODUCTS_REQUEST, loadProducts)
+  yield takeLatest([LOAD_PRODUCTS_REQUEST, SET_ALL_FILTERS_INFO_REQUEST], loadProducts)
 }
-
 
 export default function* productSaga() {
   yield all([
