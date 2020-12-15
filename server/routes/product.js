@@ -57,4 +57,21 @@ router.post('/uploadProduct', auth, (req, res) => {
     })
 })
 
+router.post('/products', auth, (req, res) => {
+  let limit = parseInt(req.body.limit);
+  let skip = parseInt(req.body.skip);
+
+  Product.find()
+    .populate()
+    .skip(skip)
+    .limit(limit)
+    .exec((error, products) => {
+      if (error) {
+        console.error(error)
+        return res.status(400).json({ code: 'DatabaseError', message: '상품 목록을 가져오는 과정에서 문제가 발생했습니다.' })
+      }
+      res.status(200).json({ success: true, products });
+    })
+})
+
 module.exports = router
