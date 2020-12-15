@@ -58,11 +58,29 @@ router.post('/uploadProduct', auth, (req, res) => {
 })
 
 router.post('/products', auth, (req, res) => {
-  let limit = parseInt(req.body.limit);
-  let skip = parseInt(req.body.skip);
+  const order = req.body.order ? req.body.order : 'desc';
+  const sortBy = req.body.sortBy ? req.body.sortBy : '_id';
+  const limit = parseInt(req.body.limit);
+  const skip = parseInt(req.body.skip);
 
-  Product.find()
-    .populate()
+  const findArgs = {}
+  if (req.body.filters?.sort) {
+    findArgs['sort'] = req.body.filters.sort
+  }
+  if (req.body.filters?.price) {
+    findArgs['price'] = {
+      $gte: req.body.filters.price[0],
+      $lte: req.body.filters.price[1],
+    }
+  }
+  if (req.body.filters?.word) {
+    findArgs['$text'] = {
+      '$search': req.body.filters.word
+    }
+  }
+  Product.find(findArgs)
+    .populate('writer')
+    .sort([[sortBy, order]])
     .skip(skip)
     .limit(limit)
     .exec((error, products) => {
