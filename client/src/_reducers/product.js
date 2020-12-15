@@ -1,6 +1,6 @@
 import {
   UPLOAD_IMAGE_REQUEST, UPLOAD_IMAGE_SUCCESS, UPLOAD_IMAGE_FAILURE,
-  RESET_UPLOAD_IMAGE,
+  RESET_UPLOAD_IMAGE, REMOVE_UPLOADED_IMAGE
 } from '../_sagas/types'
 
 const initialState = {
@@ -41,6 +41,13 @@ const product = (state = initialState, action) => {
     //     uploadImageError: null,
     //     fileData: null,
     //   }
+    case REMOVE_UPLOADED_IMAGE:
+      return {
+        ...state,
+        fileData: state.fileData.filter((v, i) => {
+          return i !== action.payload
+        })
+      }
     default:
       return {
         ...state

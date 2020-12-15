@@ -1,12 +1,14 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Dropzone from 'react-dropzone'
 import { PlusSquareOutlined } from '@ant-design/icons'
-import { UPLOAD_IMAGE_REQUEST } from '../../../../_sagas/types'
+import { UPLOAD_IMAGE_REQUEST, REMOVE_UPLOADED_IMAGE } from '../../../../_sagas/types'
+import LoadingPage from '../../LoadingPage/LoadingPage'
 
 function FileUploader() {
 
   const dispatch = useDispatch();
+  const { fileData, uploadImageLoading, uploadImageDone } = useSelector(state => state.product)
 
   const handleOnDrop = (files) => {
     const formData = new FormData();
@@ -20,6 +22,13 @@ function FileUploader() {
         formData,
         config
       }
+    })
+  }
+
+  const handleRemove = (index) => () => {
+    dispatch({
+      type: REMOVE_UPLOADED_IMAGE,
+      payload: index
     })
   }
 
@@ -46,7 +55,14 @@ function FileUploader() {
         }}
       </Dropzone>
       <div style={{ display: 'flex', width: 350, height: 240, overflowX: 'scroll' }}>
-
+        {uploadImageLoading && <LoadingPage />}
+        {uploadImageDone && fileData.map((file, index) => {
+          return (
+            <div onClick={handleRemove(index)}>
+              <img src={`http://localhost:5000/${file.image}`} alt={file.fileName} style={{ height: 240, marginRight: 10 }} />
+            </div>
+          )
+        })}
       </div>
 
     </div>
