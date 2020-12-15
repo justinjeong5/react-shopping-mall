@@ -1,19 +1,34 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import Dropzone from 'react-dropzone'
 import { PlusSquareOutlined } from '@ant-design/icons'
+import { UPLOAD_IMAGE_REQUEST } from '../../../../_sagas/types'
 
 function FileUploader() {
 
-  const handleOnDrop = () => {
+  const dispatch = useDispatch();
 
+  const handleOnDrop = (files) => {
+    const formData = new FormData();
+    const config = {
+      header: { 'content-type': 'multipart/form-data' }
+    }
+    formData.append('file', files[0])
+    dispatch({
+      type: UPLOAD_IMAGE_REQUEST,
+      payload: {
+        formData,
+        config
+      }
+    })
   }
 
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <Dropzone
         onDrop={handleOnDrop}
-        multiple
-        maxSize
+        multiple={false}
+        maxSize={10 * 1024 * 1024}
       >
         {({ getRootProps, getInputProps }) => {
           return (
@@ -33,6 +48,7 @@ function FileUploader() {
       <div style={{ display: 'flex', width: 350, height: 240, overflowX: 'scroll' }}>
 
       </div>
+
     </div>
   )
 }
