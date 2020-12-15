@@ -5,6 +5,7 @@ import { Form, Input, InputNumber, Button, Typography, Select, message } from 'a
 import FileUploader from './Sections/FileUploader'
 import { useDispatch, useSelector } from 'react-redux';
 import { RESET_UPLOAD_IMAGE, UPLOAD_PRODUCT_REQUEST } from '../../../_sagas/types'
+import { ProductClothesSort, ProductAccessorySort } from '../../utils/ProductSort/ProductSort'
 
 const { Title } = Typography;
 const { Option, OptGroup } = Select;
@@ -17,19 +18,6 @@ const layout = {
     span: 16,
   },
 };
-
-const ProductClothesSort = [
-  { value: 'outter', name: '외투' },
-  { value: 'suits', name: '정장' },
-  { value: 'skirts', name: '치마' },
-  { value: 'shirts', name: '셔츠' },
-]
-
-const ProductAccessorySort = [
-  { value: 'bag', name: '가방' },
-  { value: 'watch', name: '시계' },
-  { value: 'shoes', name: '신발' },
-]
 
 function UploadProductPage(props) {
 
@@ -113,14 +101,14 @@ function UploadProductPage(props) {
               <OptGroup label="의류">
                 {ProductClothesSort.map((value) => {
                   return (
-                    <Option key={uuidv4()} value={value.value}>{value.name}</Option>
+                    <Option key={uuidv4()} value={value}>{value}</Option>
                   )
                 })}
               </OptGroup>
               <OptGroup label="잡화">
                 {ProductAccessorySort.map((value) => {
                   return (
-                    <Option key={uuidv4()} value={value.value}>{value.name}</Option>
+                    <Option key={uuidv4()} value={value}>{value}</Option>
                   )
                 })}
               </OptGroup>
