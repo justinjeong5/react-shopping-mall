@@ -4,6 +4,7 @@ import axios from 'axios';
 import {
   UPLOAD_IMAGE_REQUEST, UPLOAD_IMAGE_SUCCESS, UPLOAD_IMAGE_FAILURE,
   UPLOAD_PRODUCT_REQUEST, UPLOAD_PRODUCT_SUCCESS, UPLOAD_PRODUCT_FAILURE,
+  LOAD_PRODUCTS_REQUEST, LOAD_PRODUCTS_SUCCESS, LOAD_PRODUCTS_FAILURE,
 } from './types'
 
 function uploadImageAPI(data) {
@@ -46,6 +47,26 @@ function* uploadProduct(action) {
   }
 }
 
+function loadProductsAPI() {
+  return axios.get('/api/product/products')
+}
+
+function* loadProducts() {
+  try {
+    const result = yield call(loadProductsAPI);
+    yield put({
+      type: LOAD_PRODUCTS_SUCCESS,
+      payload: result.data,
+    })
+  } catch (error) {
+    console.error(error)
+    yield put({
+      type: LOAD_PRODUCTS_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
 function* watchUploadImage() {
   yield takeLatest(UPLOAD_IMAGE_REQUEST, uploadImage)
 }
@@ -54,9 +75,15 @@ function* watchUploadProduct() {
   yield takeLatest(UPLOAD_PRODUCT_REQUEST, uploadProduct)
 }
 
+function* watchLoadProducts() {
+  yield takeLatest(LOAD_PRODUCTS_REQUEST, loadProducts)
+}
+
+
 export default function* productSaga() {
   yield all([
     fork(watchUploadImage),
     fork(watchUploadProduct),
+    fork(watchLoadProducts),
   ])
 }

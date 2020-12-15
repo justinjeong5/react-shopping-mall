@@ -34,6 +34,7 @@
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.9.2",
     "axios": "^0.21.0",
+    "faker": "^5.1.0",
     "next-redux-wrapper": "^6.0.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
