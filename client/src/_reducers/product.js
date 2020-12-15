@@ -7,17 +7,17 @@ import {
 
 import faker from 'faker'
 faker.locale = 'ko'
-const makeFakeProductData = Array.from(Array(20)).map((value) => {
+const makeFakeProductData = Array.from(Array(20)).map((_) => {
   return (
     {
       writer: '5fd84653d9e3e96b80a69e46',
       title: faker.lorem.sentence(),
       description: faker.lorem.paragraph(),
-      image: [
-        faker.image.image(),
-        faker.image.nightlife(),
-        faker.image.fashion(),
-        faker.image.nature()
+      images: [
+        { image: faker.image.image() },
+        { image: faker.image.nightlife() },
+        { image: faker.image.fashion() },
+        { image: faker.image.nature() },
       ],
       price: parseInt(Math.random() * 100000),
       sort: ['outter', 'skirts', 'shirts', 'suits', 'bag', 'watch', 'shoes'][parseInt(Math.random() * 6)],
@@ -37,6 +37,7 @@ const initialState = {
   loadProductsLoading: false,
   loadProductsDone: false,
   loadProductsError: null,
+  noMoreProducts: false,
 
   // productData: makeFakeProductData,
   productData: [],
@@ -97,6 +98,9 @@ const product = (state = initialState, action) => {
         uploadImageLoading: false,
         uploadImageDone: false,
         uploadImageError: null,
+        uploadProductLoading: false,
+        uploadProductDone: false,
+        uploadProductError: null,
         fileData: [],
       }
     case LOAD_PRODUCTS_REQUEST:
@@ -111,7 +115,8 @@ const product = (state = initialState, action) => {
         ...state,
         loadProductsLoading: false,
         loadProductsDone: true,
-        productData: action.payload.products
+        productData: [...state.productData, ...action.payload.products],
+        noMoreProducts: action.noMoreProducts,
       }
     case LOAD_PRODUCTS_FAILURE:
       return {

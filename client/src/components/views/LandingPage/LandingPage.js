@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid'
 
 import { Card, Row, Col, Typography, Carousel } from 'antd';
@@ -14,7 +14,12 @@ function LandingPage(props) {
 
   const dispatch = useDispatch();
   const { logoutUserDone } = useSelector(state => state.user)
-  const { productData, loadProductsLoading } = useSelector(state => state.product)
+  const { productData, loadProductsLoading, noMoreProducts } = useSelector(state => state.product)
+
+  const [skip, setSkip] = useState(0)
+  const [limit, setLimit] = useState(6)
+  const [orderBy, setOrderBy] = useState('')
+  const [sortBy, setSortBy] = useState('')
 
   useEffect(() => {
     if (logoutUserDone) {
@@ -25,8 +30,39 @@ function LandingPage(props) {
   useEffect(() => {
     dispatch({
       type: LOAD_PRODUCTS_REQUEST,
+      payload: {
+        skip,
+        limit,
+        orderBy,
+        sortBy,
+      },
     })
+    setSkip(skip + limit);
   }, [])
+
+  useEffect(() => {
+    function onScroll() {
+      if (window.pageYOffset + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
+        if (!loadProductsLoading && !noMoreProducts) {
+          dispatch({
+            type: LOAD_PRODUCTS_REQUEST,
+            payload: {
+              skip,
+              limit,
+              orderBy,
+              sortBy,
+            },
+          });
+          setSkip(skip + limit);
+        }
+      }
+    }
+    window.addEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [loadProductsLoading, noMoreProducts]);
+
 
   const renderCards = productData.map(product => {
     return (
@@ -38,15 +74,15 @@ function LandingPage(props) {
           <Carousel autoplay style={{ marginBottom: 20 }}>
             {product?.images?.map((img) => {
               return (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <img src={`http://localhost:5000/${img.image}`} style={{ width: '100%' }} />
+                <div key={uuidv4()}>
+                  <img src={`http://localhost:5000/${img.image}`} alt={img.fileName} style={{ width: '100%' }} />
                 </div>
               )
             })}
           </Carousel>
           <div>
             <a href={`/api/product/${product._id}`}>
-              <Card.Meta title={product.title} description={`${product.description.slice(0, 200)}...`} />
+              <Card.Meta title={product.title} description={`${product.description.slice(0, 100)}...`} />
             </a>
           </div>
         </Card>

@@ -47,16 +47,21 @@ function* uploadProduct(action) {
   }
 }
 
-function loadProductsAPI() {
-  return axios.get('/api/product/products')
+function loadProductsAPI(data) {
+  return axios.post('/api/product/products', data)
 }
 
-function* loadProducts() {
+function* loadProducts(action) {
   try {
-    const result = yield call(loadProductsAPI);
+    const result = yield call(loadProductsAPI, action.payload);
+    let noMore = false;
+    if (result.data.products.length === 0) {
+      noMore = true;
+    }
     yield put({
       type: LOAD_PRODUCTS_SUCCESS,
       payload: result.data,
+      noMoreProducts: noMore,
     })
   } catch (error) {
     console.error(error)
