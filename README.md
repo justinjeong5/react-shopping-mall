@@ -1,2 +1,2 @@
-# JUSTINJEONG5.GITHUB.IO
+# react-shopping-mall
 
