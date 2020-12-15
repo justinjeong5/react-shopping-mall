@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Dropzone from 'react-dropzone'
+import { v4 as uuidv4 } from 'uuid'
 import { PlusSquareOutlined } from '@ant-design/icons'
 import { UPLOAD_IMAGE_REQUEST, REMOVE_UPLOADED_IMAGE } from '../../../../_sagas/types'
 import LoadingPage from '../../LoadingPage/LoadingPage'
@@ -58,7 +59,7 @@ function FileUploader() {
         {uploadImageLoading && <LoadingPage />}
         {uploadImageDone && fileData.map((file, index) => {
           return (
-            <div onClick={handleRemove(index)}>
+            <div onClick={handleRemove(index)} key={uuidv4()}>
               <img src={`http://localhost:5000/${file.image}`} alt={file.fileName} style={{ height: 240, marginRight: 10 }} />
             </div>
           )

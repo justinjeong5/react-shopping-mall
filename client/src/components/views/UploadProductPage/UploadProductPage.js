@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { withRouter } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
-import { Form, Input, InputNumber, Button, Typography, Select } from 'antd';
+import { Form, Input, InputNumber, Button, Typography, Select, message } from 'antd';
+import FileUploader from './Sections/FileUploader'
+import { useDispatch, useSelector } from 'react-redux';
+import { RESET_UPLOAD_IMAGE, UPLOAD_PRODUCT_REQUEST } from '../../../_sagas/types'
 
 const { Title } = Typography;
 const { Option, OptGroup } = Select;
@@ -27,16 +31,44 @@ const ProductAccessorySort = [
   { value: 'shoes', name: '신발' },
 ]
 
-function UploadProductPage() {
+function UploadProductPage(props) {
+
+  const { currentUser } = useSelector(state => state.user)
+  const { fileData, uploadProductDone, uploadProductLoading } = useSelector(state => state.product)
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (uploadProductDone) {
+      message.success({ content: '상품이 정상적으로 등록되었습니다.', duration: 2 });
+
+      setTimeout(() => {
+        dispatch({
+          type: RESET_UPLOAD_IMAGE,
+        })
+        props.history.push('/')
+      }, 2000)
+    }
+  }, [uploadProductDone])
 
   const onFinish = (values) => {
-    console.table(values);
+    const payload = {
+      writer: currentUser._id,
+      ...values,
+      images: fileData
+    }
+    dispatch({
+      type: UPLOAD_PRODUCT_REQUEST,
+      payload
+    })
   };
 
   return (
     <div style={{ maxWidth: 700, margin: '3rem auto' }}>
       <div style={{ alignItems: 'center', marginBottom: '2rem' }}>
         <Title level={2} style={{ textAlign: 'center' }} >Jaymall 상품 등록</Title>
+        <FileUploader />
+        <br />
+
         <Form {...layout} name="nest-messages" onFinish={onFinish} style={{ maxWidth: 600 }} >
           <Form.Item
             name='title'
@@ -96,7 +128,7 @@ function UploadProductPage() {
           </Form.Item>
 
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" disabled={uploadProductLoading}>
               상품 등록
           </Button>
           </Form.Item>
@@ -106,4 +138,4 @@ function UploadProductPage() {
   )
 }
 
-export default UploadProductPage
+export default withRouter(UploadProductPage)

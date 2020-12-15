@@ -19,7 +19,7 @@ export const AUTHENTICATE_USER_SUCCESS = 'AUTHENTICATE_USER_SUCCESS';
 export const AUTHENTICATE_USER_FAILURE = 'AUTHENTICATE_USER_FAILURE';
 
 // ==========================================
-//                    FILE
+//                    PRODUCT
 // ==========================================
 export const UPLOAD_IMAGE_REQUEST = 'UPLOAD_IMAGE_REQUEST';
 export const UPLOAD_IMAGE_SUCCESS = 'UPLOAD_IMAGE_SUCCESS';
@@ -28,3 +28,7 @@ export const UPLOAD_IMAGE_FAILURE = 'UPLOAD_IMAGE_FAILURE';
 export const RESET_UPLOAD_IMAGE = 'RESET_UPLOAD_IMAGE';
 
 export const REMOVE_UPLOADED_IMAGE = 'REMOVE_UPLOADED_IMAGE';
+
+export const UPLOAD_PRODUCT_REQUEST = 'UPLOAD_PRODUCT_REQUEST';
+export const UPLOAD_PRODUCT_SUCCESS = 'UPLOAD_PRODUCT_SUCCESS';
+export const UPLOAD_PRODUCT_FAILURE = 'UPLOAD_PRODUCT_FAILURE';
