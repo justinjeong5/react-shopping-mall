@@ -8,6 +8,7 @@ import { CodeSandboxOutlined, LikeOutlined } from '@ant-design/icons'
 import { LOAD_PRODUCTS_REQUEST, SET_ALL_FILTERS_INFO_REQUEST } from '../../../_sagas/types'
 import LoadingPage from '../LoadingPage/LoadingPage';
 import ProductFilter from './Sections/ProductFilter'
+import ProductCard from './Sections/ProductCard'
 const { Title } = Typography;
 
 
@@ -57,36 +58,6 @@ function LandingPage(props) {
     })
   }
 
-
-  const renderCards = productData.map(product => {
-    return (
-      <Col sm={24} md={12} lg={8} key={uuidv4()}>
-        <Card
-          hoverable={true}
-          style={{ width: '100%' }}
-        >
-          <Carousel autoplay >
-            {product?.images?.map((img) => {
-              return (
-                <div key={uuidv4()}>
-                  <img src={`http://localhost:5000/${img.image}`} alt={img.fileName} style={{ width: '100%' }} />
-                </div>
-              )
-            })}
-          </Carousel>
-          <div style={{ marginTop: 20 }}>
-            <Link to={`/product/${product._id}`} style={{ color: 'black' }}>
-              <Card.Meta title={product.title} description={`${product.description.slice(0, 30)}...`} />
-              <Descriptions style={{ marginTop: 14 }}>
-                <Descriptions.Item label='가격' span={3} >{`${product.price}원`}</Descriptions.Item>
-              </Descriptions>
-            </Link>
-          </div>
-        </Card>
-      </Col>
-    )
-  })
-
   return (
     <>
       <div style={{ width: '75%', margin: '3rem auto' }}>
@@ -96,7 +67,9 @@ function LandingPage(props) {
         {productData && <ProductFilter onFilterChange={onFilterChange} />}
         <Row gutter={[24, 32]}>
           {loadProductsLoading && <LoadingPage />}
-          {productData && renderCards}
+          {productData?.map(product => (
+            <ProductCard key={uuidv4()} product={product} />
+          ))}
         </Row>
       </div>
     </>
