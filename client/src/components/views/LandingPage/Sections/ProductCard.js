@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid'
 import { Card, Col, Carousel, Descriptions } from 'antd';
+import NumberFormat from 'react-number-format';
 
 function ProductCard(props) {
 
@@ -27,7 +28,9 @@ function ProductCard(props) {
             <Link to={`/product/${product._id}`} style={{ color: 'black' }}>
               <Card.Meta title={product.title} description={`${product.description.slice(0, 30)}...`} />
               <Descriptions style={{ marginTop: 14 }}>
-                <Descriptions.Item label='가격' span={3} >{`${product.price}원`}</Descriptions.Item>
+                <Descriptions.Item label='가격' span={3} >
+                  <NumberFormat value={product.price} displayType={'text'} thousandSeparator={true} suffix={'원'} />
+                </Descriptions.Item>
               </Descriptions>
             </Link>
           </div>
