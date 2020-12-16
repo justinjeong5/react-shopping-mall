@@ -45,7 +45,6 @@ router.post('/uploadProduct', auth, (req, res) => {
         console.error(error)
         return res.status(401).json({ code: 'DatabaseError', message: '사용자를 데이터베이스에서 찾을 수 없습니다.' })
       }
-      User.getIndex
       const product = new Product(req.body)
       product.save((error, product) => {
         if (error) {
@@ -90,6 +89,27 @@ router.post('/products', auth, (req, res) => {
       }
       res.status(200).json({ success: true, products });
     })
+})
+
+// return axios.get(`/api/product/product_by_id?id=${data}&type=single`)
+router.get('/product_by_id', auth, (req, res) => {
+  const findArgs = {}
+  if (req.query.type === 'array') {
+    findArgs['_id'] = { $in: req.query.id }
+  } else {
+    findArgs['_id'] = req.query.id
+  }
+
+  Product.findOne(findArgs)
+    .populate('writer')
+    .exec((error, productDetails) => {
+      if (error) {
+        console.error(error)
+        return res.status(401).json({ code: 'DatabaseError', message: '사용자를 데이터베이스에서 찾을 수 없습니다.' })
+      }
+      res.status(200).json({ success: true, productDetails });
+    })
+
 })
 
 module.exports = router
