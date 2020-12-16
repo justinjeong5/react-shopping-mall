@@ -85,9 +85,13 @@ function UploadProductPage(props) {
             rules={[
               { required: true, message: '상품 가격을 입력해주세요.' },
               { type: 'number', min: 1, message: '가격은 0원 보다 높아야합니다.' },
+              { type: 'number', max: 100000000, message: '우리 쇼핑몰은 1억원 이하의 상품만 거래합니다.' },
             ]}
           >
-            <InputNumber placeholder='가격' />
+            <InputNumber
+              formatter={value => `${value}원`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\원\s?|(,*)/g, '')}
+              placeholder='가격' />
           </Form.Item>
 
           <Form.Item
