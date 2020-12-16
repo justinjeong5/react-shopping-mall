@@ -5,6 +5,7 @@ import {
   LOAD_PRODUCTS_REQUEST, LOAD_PRODUCTS_SUCCESS, LOAD_PRODUCTS_FAILURE,
   RESET_PRODUCTS,
   SET_ALL_FILTERS_INFO_REQUEST,
+  LOAD_PRODUCT_DETAILS_REQUEST, LOAD_PRODUCT_DETAILS_SUCCESS, LOAD_PRODUCT_DETAILS_FAILURE,
 } from '../_sagas/types'
 
 const initialState = {
@@ -18,6 +19,9 @@ const initialState = {
   loadProductsDone: false,
   loadProductsError: null,
   noMoreProducts: false,
+  loadProductDetailsLoading: false,
+  loadProductDetailsDone: false,
+  loadProductDetailsError: null,
 
   skip: 0,
   limit: 6,
@@ -27,6 +31,7 @@ const initialState = {
   // productData: makeFakeProductData,
   productData: [],
   fileData: [],
+  currentProduct: {},
 }
 
 const product = (state = initialState, action) => {
@@ -125,6 +130,26 @@ const product = (state = initialState, action) => {
         orderBy: action.payload.orderBy,
         sortBy: action.payload.sortBy,
         filters: action.payload.filters,
+      }
+    case LOAD_PRODUCT_DETAILS_REQUEST:
+      return {
+        ...state,
+        loadProductDetailsLoading: true,
+        loadProductDetailsDone: false,
+        loadProductDetailsError: null,
+      }
+    case LOAD_PRODUCT_DETAILS_SUCCESS:
+      return {
+        ...state,
+        loadProductDetailsLoading: false,
+        loadProductDetailsDone: true,
+        currentProduct: action.payload.productDetails,
+      }
+    case LOAD_PRODUCT_DETAILS_FAILURE:
+      return {
+        ...state,
+        loadProductDetailsLoading: false,
+        loadProductDetailsError: action.error
       }
     default:
       return {
