@@ -94,11 +94,17 @@ router.post('/products', (req, res) => {
 // return axios.get(`/api/product/product_by_id?id=${data}&type=single`)
 router.get('/product_by_id', (req, res) => {
   const findArgs = {}
+
+  if (req.query.id === '') {
+    return res.status(200).json({ success: true, productDetails: [] });
+  }
+
   if (req.query.type === 'array') {
     findArgs['_id'] = { $in: [...req.query.id.split(',')] }
   } else {
     findArgs['_id'] = req.query.id
   }
+
   Product.find(findArgs)
     .populate('writer')
     .exec((error, productDetails) => {
@@ -108,7 +114,6 @@ router.get('/product_by_id', (req, res) => {
       }
       res.status(200).json({ success: true, productDetails });
     })
-
 })
 
 module.exports = router
