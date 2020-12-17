@@ -7,6 +7,7 @@ import {
   LOGOUT_USER_REQUEST, LOGOUT_USER_SUCCESS, LOGOUT_USER_FAILURE,
   AUTHENTICATE_USER_REQUEST, AUTHENTICATE_USER_SUCCESS, AUTHENTICATE_USER_FAILURE,
   ADD_TO_CART_REQUEST, ADD_TO_CART_SUCCESS, ADD_TO_CART_FAILURE,
+  LOAD_CART_ITEMS_REQUEST, LOAD_CART_ITEMS_SUCCESS, LOAD_CART_ITEMS_FAILURE,
 } from './types'
 
 function logInAPI(data) {
@@ -95,7 +96,6 @@ function addToCartAPI(data) {
 function* addToCart(action) {
   try {
     const result = yield call(addToCartAPI, action.payload);
-    console.log(result, 'result addToCart saga')
     yield put({
       type: ADD_TO_CART_SUCCESS,
       payload: result.data,
@@ -104,6 +104,26 @@ function* addToCart(action) {
     console.error(error)
     yield put({
       type: ADD_TO_CART_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
+function loadCartItemsAPI(data) {
+  return axios.get(`/api/product/product_by_id?id=${data}&type=array`)
+}
+
+function* loadCartItems(action) {
+  try {
+    const result = yield call(loadCartItemsAPI, action.payload);
+    yield put({
+      type: LOAD_CART_ITEMS_SUCCESS,
+      payload: result.data,
+    })
+  } catch (error) {
+    console.error(error)
+    yield put({
+      type: LOAD_CART_ITEMS_FAILURE,
       error: error.response.data,
     })
   }
@@ -125,8 +145,12 @@ function* watchAuthUser() {
   yield takeLatest(AUTHENTICATE_USER_REQUEST, auth)
 }
 
-function* watchLoadAddToCart() {
+function* watchAddToCart() {
   yield takeLatest(ADD_TO_CART_REQUEST, addToCart)
+}
+
+function* watchLoadCartItems() {
+  yield takeLatest(LOAD_CART_ITEMS_REQUEST, loadCartItems)
 }
 
 export default function* userSaga() {
@@ -135,6 +159,7 @@ export default function* userSaga() {
     fork(watchRegister),
     fork(watchLogout),
     fork(watchAuthUser),
-    fork(watchLoadAddToCart),
+    fork(watchAddToCart),
+    fork(watchLoadCartItems),
   ])
 }

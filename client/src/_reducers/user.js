@@ -4,6 +4,7 @@ import {
   LOGOUT_USER_REQUEST, LOGOUT_USER_SUCCESS, LOGOUT_USER_FAILURE,
   AUTHENTICATE_USER_REQUEST, AUTHENTICATE_USER_SUCCESS, AUTHENTICATE_USER_FAILURE,
   ADD_TO_CART_REQUEST, ADD_TO_CART_SUCCESS, ADD_TO_CART_FAILURE,
+  LOAD_CART_ITEMS_REQUEST, LOAD_CART_ITEMS_SUCCESS, LOAD_CART_ITEMS_FAILURE,
 } from '../_sagas/types'
 
 const initialState = {
@@ -22,8 +23,12 @@ const initialState = {
   addToCartLoading: false,
   addToCartDone: false,
   addToCartError: null,
+  loadCartItemsLoading: false,
+  loadCartItemsDone: false,
+  loadCartItemsError: null,
 
   currentUser: null,
+  cartData: null,
 }
 
 const user = (state = initialState, action) => {
@@ -132,6 +137,26 @@ const user = (state = initialState, action) => {
         ...state,
         addToCartLoading: false,
         addToCartError: action.error
+      }
+    case LOAD_CART_ITEMS_REQUEST:
+      return {
+        ...state,
+        loadCartItemsLoading: true,
+        loadCartItemsDone: false,
+        loadCartItemsError: null,
+      }
+    case LOAD_CART_ITEMS_SUCCESS:
+      return {
+        ...state,
+        loadCartItemsLoading: false,
+        loadCartItemsDone: true,
+        cartData: action.payload.productDetails,
+      }
+    case LOAD_CART_ITEMS_FAILURE:
+      return {
+        ...state,
+        loadCartItemsLoading: false,
+        loadCartItemsError: action.error
       }
     default:
       return {
