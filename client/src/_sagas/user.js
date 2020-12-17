@@ -8,6 +8,7 @@ import {
   AUTHENTICATE_USER_REQUEST, AUTHENTICATE_USER_SUCCESS, AUTHENTICATE_USER_FAILURE,
   ADD_TO_CART_REQUEST, ADD_TO_CART_SUCCESS, ADD_TO_CART_FAILURE,
   LOAD_CART_ITEMS_REQUEST, LOAD_CART_ITEMS_SUCCESS, LOAD_CART_ITEMS_FAILURE,
+  REMOVE_CART_ITEM_REQUEST, REMOVE_CART_ITEM_SUCCESS, REMOVE_CART_ITEM_FAILURE,
 } from './types'
 
 function logInAPI(data) {
@@ -90,6 +91,7 @@ function* auth() {
 }
 
 function addToCartAPI(data) {
+  console.log(data, 'data addToCartAPI')
   return axios.post(`/api/user/addToCart`, data)
 }
 
@@ -129,6 +131,26 @@ function* loadCartItems(action) {
   }
 }
 
+function removeCartItemAPI(data) {
+  return axios.post(`/api/user/removeFromCart`, data)
+}
+
+function* removeCartItem(action) {
+  try {
+    const result = yield call(removeCartItemAPI, action.payload);
+    yield put({
+      type: REMOVE_CART_ITEM_SUCCESS,
+      payload: result.data,
+    })
+  } catch (error) {
+    console.error(error)
+    yield put({
+      type: REMOVE_CART_ITEM_FAILURE,
+      error: error.response.data,
+    })
+  }
+}
+
 function* watchLogin() {
   yield takeLatest(LOGIN_USER_REQUEST, logIn)
 }
@@ -153,6 +175,10 @@ function* watchLoadCartItems() {
   yield takeLatest(LOAD_CART_ITEMS_REQUEST, loadCartItems)
 }
 
+function* watchRemoveCartItem() {
+  yield takeLatest(REMOVE_CART_ITEM_REQUEST, removeCartItem)
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogin),
@@ -161,5 +187,6 @@ export default function* userSaga() {
     fork(watchAuthUser),
     fork(watchAddToCart),
     fork(watchLoadCartItems),
+    fork(watchRemoveCartItem),
   ])
 }

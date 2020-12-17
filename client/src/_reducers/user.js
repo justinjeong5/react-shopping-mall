@@ -5,6 +5,7 @@ import {
   AUTHENTICATE_USER_REQUEST, AUTHENTICATE_USER_SUCCESS, AUTHENTICATE_USER_FAILURE,
   ADD_TO_CART_REQUEST, ADD_TO_CART_SUCCESS, ADD_TO_CART_FAILURE,
   LOAD_CART_ITEMS_REQUEST, LOAD_CART_ITEMS_SUCCESS, LOAD_CART_ITEMS_FAILURE,
+  REMOVE_CART_ITEM_REQUEST, REMOVE_CART_ITEM_SUCCESS, REMOVE_CART_ITEM_FAILURE,
 } from '../_sagas/types'
 
 const initialState = {
@@ -26,6 +27,9 @@ const initialState = {
   loadCartItemsLoading: false,
   loadCartItemsDone: false,
   loadCartItemsError: null,
+  removeCartItemLoading: false,
+  removeCartItemDone: false,
+  removeCartItemError: null,
 
   currentUser: null,
   cartData: null,
@@ -161,6 +165,9 @@ const user = (state = initialState, action) => {
         ...state,
         loadCartItemsLoading: false,
         loadCartItemsDone: true,
+        removeCartItemLoading: false,
+        removeCartItemDone: false,
+
         cartData: data,
       }
     case LOAD_CART_ITEMS_FAILURE:
@@ -168,6 +175,29 @@ const user = (state = initialState, action) => {
         ...state,
         loadCartItemsLoading: false,
         loadCartItemsError: action.error
+      }
+    case REMOVE_CART_ITEM_REQUEST:
+      return {
+        ...state,
+        removeCartItemLoading: true,
+        removeCartItemDone: false,
+        removeCartItemError: null,
+      }
+    case REMOVE_CART_ITEM_SUCCESS:
+      return {
+        ...state,
+        removeCartItemLoading: false,
+        removeCartItemDone: true,
+        currentUser: {
+          ...state.currentUser,
+          cart: action.payload.cart
+        }
+      }
+    case REMOVE_CART_ITEM_FAILURE:
+      return {
+        ...state,
+        removeCartItemLoading: false,
+        removeCartItemError: action.error
       }
     default:
       return {
