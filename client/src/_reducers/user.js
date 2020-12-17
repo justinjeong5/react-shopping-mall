@@ -146,11 +146,22 @@ const user = (state = initialState, action) => {
         loadCartItemsError: null,
       }
     case LOAD_CART_ITEMS_SUCCESS:
+      const data = action.payload.productDetails.map((item, index) => {
+        return {
+          key: item._id,
+          title: item.title,
+          price: item.price,
+          quantity: state.currentUser.cart[index].quantity,
+          totalPrice: state.currentUser.cart[index].quantity * item.price,
+          image: item.images[0].image,
+          tags: [item.sort],
+        }
+      })
       return {
         ...state,
         loadCartItemsLoading: false,
         loadCartItemsDone: true,
-        cartData: action.payload.productDetails,
+        cartData: data,
       }
     case LOAD_CART_ITEMS_FAILURE:
       return {
