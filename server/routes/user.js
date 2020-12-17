@@ -25,8 +25,9 @@ router.get('/auth', auth, (req, res) => {
     lastname: req.user.lastname,
     image: req.user.image,
     role: req.user.role,
+    cart: req.user.cart,
     isAdmin: isAdmin(req.user.role),
-    isAuth: true
+    isAuth: true,
   })
 })
 
@@ -93,5 +94,54 @@ router.get('/logout', auth, (req, res) => {
     })
 })
 
+// return axios.post(`/api/user/addToCart`, data)
+router.post('/addToCart', auth, (req, res) => {
+  User.findOne({ '_id': req.user._id },
+    (error, user) => {
+      if (error) {
+        console.error(error)
+        return res.status(400).json({ code: 'DatabaseError', message: '유저를 불러오는 과정에서 문제가 발생했습니다.' })
+      }
+
+      let duplicated = user.cart.filter(value => {
+        return value.id === req.body.productId;
+      }).length;
+
+      if (duplicated) {
+        User.findOneAndUpdate({ '_id': req.user._id, 'cart.id': req.body.productId },
+          { $inc: { 'cart.$.quantity': 1 } },
+          { new: true },
+          (error, doc) => {
+            if (error) {
+              console.error(error);
+              return res.status(400).json({ code: 'DatabaseError', message: '카트에 담는 과정에서 문제가 발생했습니다.' });
+            }
+            res.status(200).json({ user })
+          }
+        )
+      } else {
+        User.findOneAndUpdate({ '_id': req.user._id },
+          {
+            $push: {
+              cart: {
+                id: req.body.productId,
+                quantity: 1,
+                data: Date.now()
+              }
+            }
+          },
+          { new: true },
+          (error, doc) => {
+            if (error) {
+              console.error(error);
+              return res.status(400).json({ code: 'DatabaseError', message: '카트에 담는 과정에서 문제가 발생했습니다.' });
+            }
+            res.status(200).json({ user })
+          }
+        )
+      }
+
+    })
+})
 
 module.exports = router
