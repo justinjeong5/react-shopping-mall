@@ -94,7 +94,6 @@ router.get('/logout', auth, (req, res) => {
     })
 })
 
-// return axios.post(`/api/user/addToCart`, data)
 router.post('/addToCart', auth, (req, res) => {
   User.findOne({ '_id': req.user._id },
     (error, user) => {
@@ -126,7 +125,7 @@ router.post('/addToCart', auth, (req, res) => {
               cart: {
                 id: req.body.productId,
                 quantity: 1,
-                data: Date.now()
+                date: Date.now()
               }
             }
           },
