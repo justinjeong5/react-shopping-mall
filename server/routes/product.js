@@ -95,12 +95,11 @@ router.post('/products', (req, res) => {
 router.get('/product_by_id', (req, res) => {
   const findArgs = {}
   if (req.query.type === 'array') {
-    findArgs['_id'] = { $in: req.query.id }
+    findArgs['_id'] = { $in: [...req.query.id.split(',')] }
   } else {
     findArgs['_id'] = req.query.id
   }
-
-  Product.findOne(findArgs)
+  Product.find(findArgs)
     .populate('writer')
     .exec((error, productDetails) => {
       if (error) {

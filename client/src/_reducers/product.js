@@ -143,7 +143,7 @@ const product = (state = initialState, action) => {
         ...state,
         loadProductDetailsLoading: false,
         loadProductDetailsDone: true,
-        currentProduct: action.payload.productDetails,
+        currentProduct: action.payload.productDetails[0],
       }
     case LOAD_PRODUCT_DETAILS_FAILURE:
       return {
