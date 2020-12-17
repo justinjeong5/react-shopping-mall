@@ -15,6 +15,7 @@ import NavBar from './components/views/NavBar/NavBar'
 import Footer from './components/views/Footer/Footer'
 import UploadProductPage from './components/views/UploadProductPage/UploadProductPage'
 import DetailProductPage from './components/views/DetailProductPage/DetailProductPage'
+import CartPage from './components/views/CartPage/CartPage'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route exact path="/" component={Auth(LandingPage, null)} />
             <Route exact path="/register" component={Auth(RegisterPage, false)} />
             <Route exact path="/login" component={Auth(LoginPage, false)} />
+            <Route exact path="/product/cart" component={Auth(CartPage, true)} />
             <Route exact path="/product/upload" component={Auth(UploadProductPage, true)} />
             <Route exact path="/product/:productId" component={Auth(DetailProductPage, null)} />
           </Switch>
