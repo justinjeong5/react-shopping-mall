@@ -116,7 +116,7 @@ router.post('/addToCart', auth, (req, res) => {
               console.error(error);
               return res.status(400).json({ code: 'DatabaseError', message: '카트에 담는 과정에서 문제가 발생했습니다.' });
             }
-            res.status(200).json({ user })
+            res.status(200).json({ cart: doc.cart })
           }
         )
       } else {
@@ -136,7 +136,7 @@ router.post('/addToCart', auth, (req, res) => {
               console.error(error);
               return res.status(400).json({ code: 'DatabaseError', message: '카트에 담는 과정에서 문제가 발생했습니다.' });
             }
-            res.status(200).json({ user })
+            res.status(200).json({ cart: doc.cart })
           }
         )
       }

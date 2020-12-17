@@ -122,7 +122,10 @@ const user = (state = initialState, action) => {
         ...state,
         addToCartLoading: false,
         addToCartDone: true,
-        currentUser: action.payload.user,
+        currentUser: {
+          ...state.currentUser,
+          cart: action.payload.cart,
+        }
       }
     case ADD_TO_CART_FAILURE:
       return {
