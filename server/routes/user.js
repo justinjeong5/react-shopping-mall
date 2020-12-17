@@ -125,7 +125,7 @@ router.post('/addToCart', auth, (req, res) => {
               cart: {
                 id: req.body.productId,
                 quantity: 1,
-                date: Date.now()
+                date: Date.now(),
               }
             }
           },
@@ -139,8 +139,44 @@ router.post('/addToCart', auth, (req, res) => {
           }
         )
       }
-
     })
+})
+
+router.post('/removeFromCart', auth, (req, res) => {
+  User.findOne({ '_id': req.user._id },
+    (error, user) => {
+      if (error) {
+        console.error(error)
+        return res.status(400).json({ code: 'DatabaseError', message: '유저를 불러오는 과정에서 문제가 발생했습니다.' })
+      }
+      const removeTargetItem = user.cart.filter(item => { return item.id === req.body.productId })[0];
+      if (removeTargetItem.quantity > 1) {
+        User.findOneAndUpdate({ '_id': req.user._id, 'cart.id': req.body.productId },
+          { $inc: { 'cart.$.quantity': -1 } },
+          { new: true },
+          (error, user) => {
+            if (error) {
+              console.error(error);
+              return res.status(400).json({ code: 'DatabaseError', message: '카트에 담는 과정에서 문제가 발생했습니다.' });
+            }
+            res.status(200).json({ cart: user.cart })
+          }
+        )
+      } else {
+        User.findOneAndUpdate({ '_id': req.user._id },
+          { '$pull': { 'cart': { id: req.body.productId } } },
+          { new: true },
+          (error, user) => {
+            if (error) {
+              console.error(error)
+              return res.status(400).json({ code: 'DatabaseError', message: '상품을 데이터베이스에서 찾을 수 없습니다.' })
+            }
+            res.status(200).json({ cart: user.cart })
+          })
+      }
+    })
+
+
 })
 
 module.exports = router
