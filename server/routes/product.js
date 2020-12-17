@@ -4,7 +4,7 @@ const { User } = require('../models/User')
 const { Product } = require('../models/Product')
 const multer = require('multer');
 
-const { auth } = require('../middleware/auth')
+const { auth } = require('../middleware/auth');
 
 
 var storage = multer.diskStorage({
@@ -56,7 +56,7 @@ router.post('/uploadProduct', auth, (req, res) => {
     })
 })
 
-router.post('/products', auth, (req, res) => {
+router.post('/products', (req, res) => {
   const order = req.body.order ? req.body.order : 'desc';
   const sortBy = req.body.sortBy ? req.body.sortBy : '_id';
   const limit = parseInt(req.body.limit);
@@ -92,7 +92,7 @@ router.post('/products', auth, (req, res) => {
 })
 
 // return axios.get(`/api/product/product_by_id?id=${data}&type=single`)
-router.get('/product_by_id', auth, (req, res) => {
+router.get('/product_by_id', (req, res) => {
   const findArgs = {}
   if (req.query.type === 'array') {
     findArgs['_id'] = { $in: req.query.id }
