@@ -81,7 +81,6 @@ function loadProductDetailsAPI(data) {
 function* loadProductDetails(action) {
   try {
     const result = yield call(loadProductDetailsAPI, action.payload);
-    console.log(result, 'result productDetails saga')
     yield put({
       type: LOAD_PRODUCT_DETAILS_SUCCESS,
       payload: result.data,

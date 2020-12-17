@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid'
 
-import { Card, Row, Col, Typography, Carousel, Descriptions } from 'antd';
-import { CodeSandboxOutlined, LikeOutlined } from '@ant-design/icons'
+import { Row, Typography } from 'antd';
+import { CodeSandboxOutlined } from '@ant-design/icons'
 import { LOAD_PRODUCTS_REQUEST, SET_ALL_FILTERS_INFO_REQUEST } from '../../../_sagas/types'
 import LoadingPage from '../LoadingPage/LoadingPage';
 import ProductFilter from './Sections/ProductFilter'
@@ -61,7 +61,7 @@ function LandingPage(props) {
   return (
     <>
       <div style={{ width: '75%', margin: '3rem auto' }}>
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center', marginTop: 100, marginBottom: 100 }}>
           <Title level={2}> Jaymall에 오신것을 환영합니다. <CodeSandboxOutlined /></Title>
         </div>
         {productData && <ProductFilter onFilterChange={onFilterChange} />}
