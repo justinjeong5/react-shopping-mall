@@ -1,13 +1,22 @@
 import React from 'react'
-import { Descriptions, Tabs, } from 'antd';
-import { useSelector } from 'react-redux';
+import { Button, Descriptions, Tabs, } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import NumberFormat from 'react-number-format';
+import { ADD_TO_CART_REQUEST } from '../../../../_sagas/types'
 
 const { TabPane } = Tabs;
 
 function ProductInfo() {
 
+  const dispatch = useDispatch();
   const { currentProduct } = useSelector(state => state.product)
+
+  const handleAddToCart = () => {
+    dispatch({
+      type: ADD_TO_CART_REQUEST,
+      payload: { productId: currentProduct._id }
+    })
+  }
 
   return (
     <div>
@@ -21,6 +30,14 @@ function ProductInfo() {
             <Descriptions.Item label="누적판매" span={3}>{currentProduct.sold}</Descriptions.Item>
             <Descriptions.Item >&nbsp;&nbsp;{currentProduct.description}</Descriptions.Item>
           </Descriptions>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}>
+            <Button
+              size='large'
+              shape='round'
+              type='danger'
+              onClick={handleAddToCart}
+            >장바구니에 담기</Button>
+          </div>
         </TabPane>
 
         <TabPane tab="구매 후기" key="2">

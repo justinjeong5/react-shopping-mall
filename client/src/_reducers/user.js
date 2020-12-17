@@ -3,6 +3,7 @@ import {
   REGISTER_USER_REQUEST, REGISTER_USER_SUCCESS, REGISTER_USER_FAILURE,
   LOGOUT_USER_REQUEST, LOGOUT_USER_SUCCESS, LOGOUT_USER_FAILURE,
   AUTHENTICATE_USER_REQUEST, AUTHENTICATE_USER_SUCCESS, AUTHENTICATE_USER_FAILURE,
+  ADD_TO_CART_REQUEST, ADD_TO_CART_SUCCESS, ADD_TO_CART_FAILURE,
 } from '../_sagas/types'
 
 const initialState = {
@@ -18,6 +19,9 @@ const initialState = {
   authenticateUserLoading: false,
   authenticateUserDone: false,
   authenticateUserError: null,
+  addToCartLoading: false,
+  addToCartDone: false,
+  addToCartError: null,
 
   currentUser: null,
 }
@@ -105,6 +109,26 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         authenticateUserError: action.error
+      }
+    case ADD_TO_CART_REQUEST:
+      return {
+        ...state,
+        addToCartLoading: true,
+        addToCartDone: false,
+        addToCartError: null,
+      }
+    case ADD_TO_CART_SUCCESS:
+      return {
+        ...state,
+        addToCartLoading: false,
+        addToCartDone: true,
+        currentUser: action.payload.user,
+      }
+    case ADD_TO_CART_FAILURE:
+      return {
+        ...state,
+        addToCartLoading: false,
+        addToCartError: action.error
       }
     default:
       return {
