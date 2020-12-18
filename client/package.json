@@ -29,11 +29,13 @@
   "dependencies": {
     "@agney/react-loading": "^0.1.2",
     "@ant-design/icons": "^4.3.0",
+    "@sideway/address": "^4.1.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.9.2",
     "axios": "^0.21.0",
+    "core-js": "^3.8.1",
     "faker": "^5.1.0",
     "next-redux-wrapper": "^6.0.2",
     "react": "^16.14.0",
